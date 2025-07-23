@@ -1,0 +1,36 @@
+{
+  "name": "yatagarasu",
+  "version": "0.0.1",
+  "description": "An orchestrator for agentic coding",
+  "homepage": "https://github.com/mizoguche/yatagarasu#readme",
+  "bugs": {
+    "url": "https://github.com/mizoguche/yatagarasu/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mizoguche/yatagarasu.git"
+  },
+  "license": "MIT",
+  "author": "mizoguche",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "bin": {
+    "yatagarasu": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "yatagarasu",
+    "commands": "./dist/commands",
+    "dirname": "yatagarasu",
+    "topicSeparator": " "
+  },
+  "dependencies": {
+    "@oclif/core": "^4.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.120",
+    "ts-node": "^10.9.2"
+  }
+}
