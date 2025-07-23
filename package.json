@@ -22,7 +22,7 @@
   },
   "oclif": {
     "bin": "yatagarasu",
-    "commands": "./dist/commands",
+    "commands": "./src/commands",
     "dirname": "yatagarasu",
     "topicSeparator": " "
   },
