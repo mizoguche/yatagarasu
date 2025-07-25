@@ -22,6 +22,7 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
     "check": "npm run test && npm run lint && npm run format:check"
   },
   "bin": {
@@ -35,6 +36,7 @@
   },
   "dependencies": {
     "@oclif/core": "^4.5.1",
+    "neverthrow": "^8.2.0",
     "octokit": "^5.0.3",
     "winston": "^3.17.0"
   },

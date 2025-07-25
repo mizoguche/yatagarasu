@@ -21,8 +21,23 @@ export default class Serve extends BaseCommand {
     const { args, flags } = await this.parse(Serve);
 
     logger.info('Fetching GitHub issues...');
-    const issues = await fetchIssues();
-    logger.info(`Fetched ${issues.data.length} issues`);
+    const issuesResult = await fetchIssues();
+
+    issuesResult.match(
+      (issues) => {
+        logger.info(JSON.stringify(issues.data, null, 2));
+        issues.data.forEach((issue) =>
+          logger.info(JSON.stringify(issue, null, 2)),
+        );
+        logger.info(`Fetched ${issues.data.length} issues`);
+      },
+      (error) => {
+        logger.error(
+          `Failed to fetch issues: ${error.type} - ${error.message}`,
+        );
+        this.error(`GitHub API Error: ${error.message}`);
+      },
+    );
 
     const name = flags.name ?? 'world';
     logger.info(`Hello ${name} from serve command`);
