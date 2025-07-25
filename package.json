@@ -27,7 +27,8 @@
     "topicSeparator": " "
   },
   "dependencies": {
-    "@oclif/core": "^4.5.1"
+    "@oclif/core": "^4.5.1",
+    "octokit": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "^18.19.120",

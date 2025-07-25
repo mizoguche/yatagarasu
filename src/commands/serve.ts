@@ -1,4 +1,5 @@
 import {Args, Command, Flags} from '@oclif/core'
+import {fetchIssues} from "../feature/github/GitHubClient.js";
 
 export default class Serve extends Command {
   static override args = {
@@ -17,6 +18,8 @@ export default class Serve extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Serve)
+    const issues = await fetchIssues();
+    console.log(issues);
 
     const name = flags.name ?? 'world'
     this.log(`hello ${name} from /Users/mizoguche/workspace/src/github.com/mizoguche/yatagarasu/src/commands/serve.ts`)
