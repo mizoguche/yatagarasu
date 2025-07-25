@@ -1,13 +1,16 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { fetchIssues } from '../feature/github/GitHubClient.js';
+import logger from '../logger.js';
+import { BaseCommand } from './base.js';
 
-export default class Serve extends Command {
+export default class Serve extends BaseCommand {
   static override args = {
     file: Args.string({ description: 'file to read' }),
   };
   static override description = 'describe the command here';
   static override examples = ['<%= config.bin %> <%= command.id %>'];
   static override flags = {
+    ...BaseCommand.baseFlags,
     // flag with no value (-f, --force)
     force: Flags.boolean({ char: 'f' }),
     // flag with a value (-n, --name=VALUE)
@@ -16,15 +19,15 @@ export default class Serve extends Command {
 
   public async run(): Promise<void> {
     const { args, flags } = await this.parse(Serve);
+
+    logger.info('Fetching GitHub issues...');
     const issues = await fetchIssues();
-    console.log(issues);
+    logger.info(`Fetched ${issues.data.length} issues`);
 
     const name = flags.name ?? 'world';
-    this.log(
-      `hello ${name} from /Users/mizoguche/workspace/src/github.com/mizoguche/yatagarasu/src/commands/serve.ts`,
-    );
+    logger.info(`Hello ${name} from serve command`);
     if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`);
+      logger.info(`Force flag enabled with file: ${args.file}`);
     }
   }
 }
