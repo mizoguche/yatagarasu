@@ -15,8 +15,14 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run test && npm run lint && npm run format:check"
   },
   "bin": {
     "yatagarasu": "./bin/run.js"
@@ -33,9 +39,16 @@
   },
   "devDependencies": {
     "@types/node": "^18.19.120",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "@vitest/ui": "^3.2.4",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
     "vitest": "^3.2.4"
   }
 }
