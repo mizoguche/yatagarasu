@@ -15,7 +15,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "bin": {
     "yatagarasu": "./bin/run.js"
@@ -32,6 +33,9 @@
   },
   "devDependencies": {
     "@types/node": "^18.19.120",
-    "ts-node": "^10.9.2"
+    "@vitest/ui": "^3.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
   }
 }
