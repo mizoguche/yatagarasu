@@ -6,128 +6,6 @@ import { callClaude } from '../services/claude-api.js';
 
 const { App } = bolt;
 
-type ToolName =
-  | 'Task'
-  | 'Bash'
-  | 'Glob'
-  | 'Grep'
-  | 'LS'
-  | 'ExitPlanMode'
-  | 'Read'
-  | 'Edit'
-  | 'MultiEdit'
-  | 'Write'
-  | 'NotebookRead'
-  | 'NotebookEdit'
-  | 'WebFetch'
-  | 'TodoWrite'
-  | 'WebSearch';
-
-type Usage = {
-  input_tokens: number;
-  cache_creation_input_tokens: number;
-  cache_read_input_tokens: number;
-  output_tokens: number;
-  service_tier: string;
-};
-
-type ThinkingContent = {
-  type: 'thinking';
-  thinking: string;
-  signature: string;
-};
-
-type TextContent = {
-  type: 'text';
-  text: string;
-};
-
-type ToolUseContent = {
-  type: 'tool_use';
-  id: string;
-  name: ToolName;
-  input: {
-    file_path?: string;
-    path?: string;
-  };
-};
-
-type AssistantContent = ThinkingContent | TextContent | ToolUseContent;
-
-type AssistantMessage = {
-  id: string;
-  type: 'message';
-  role: 'assistant';
-  model: string;
-  content: AssistantContent[];
-  stop_reason: string | null;
-  stop_sequence: string | null;
-  usage: Usage;
-};
-
-type AssistantEvent = {
-  type: 'assistant';
-  message: AssistantMessage;
-  parent_tool_use_id: string | null;
-  session_id: string;
-};
-
-type ToolResultContent = {
-  type: 'tool_result';
-  tool_use_id: string;
-  content: string;
-  is_error?: boolean;
-};
-
-type UserMessage = {
-  role: 'user';
-  content: ToolResultContent[];
-};
-
-type UserEvent = {
-  type: 'user';
-  message: UserMessage;
-  parent_tool_use_id: string | null;
-  session_id: string;
-};
-
-type SystemEvent = {
-  type: 'system';
-  subtype: string;
-  cwd: string;
-  session_id: string;
-  tools: ToolName[];
-  mcp_servers: any[]; // 中身が不明なためany[]
-  model: string;
-  permissionMode: string;
-  apiKeySource: string;
-};
-
-type ResultUsage = Usage & {
-  server_tool_use: {
-    web_search_requests: number;
-  };
-};
-
-type ResultEvent = {
-  type: 'result';
-  subtype: string;
-  is_error: boolean;
-  duration_ms: number;
-  duration_api_ms: number;
-  num_turns: number;
-  result: string;
-  session_id: string;
-  total_cost_usd: number;
-  usage: ResultUsage;
-};
-
-export type CaludeEvent =
-  | SystemEvent
-  | AssistantEvent
-  | UserEvent
-  | ResultEvent;
-
 export default class Serve extends BaseCommand {
   static override args = {
     file: Args.string({ description: 'file to read' }),
@@ -154,7 +32,8 @@ export default class Serve extends BaseCommand {
       await say(buildMessage('ざわ……ざわ……', event.ts));
 
       try {
-        for await (const ev of callClaude(event.text)) {
+        const prompt = event.text.replace(/<@.*?>\s*/, '');
+        for await (const ev of callClaude(prompt)) {
           switch (ev.type) {
             case 'assistant':
               for (const content of ev.message.content) {
@@ -202,7 +81,7 @@ const buildThinking = (thinking: string, threadTs: string) => {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: '```\n' + thinking.substring(0, 2900) + '\n```',
+          text: '```\n' + thinking.substring(0, 2950) + '\n```',
         },
       },
     ],
@@ -218,7 +97,7 @@ const buildMessage = (message: string, threadTs: string) => {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: message.substring(0, 2900),
+          text: message.substring(0, 2950),
         },
       },
     ],
