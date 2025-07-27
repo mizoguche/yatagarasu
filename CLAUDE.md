@@ -1,70 +1,66 @@
-作業を行うときは以下の手順に従ってください。
+# CLAUDE.md
 
-# 1. git worktree 作成と移動
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-- 最新の origin/main から worktree を作成する
-- ブランチ名はすべて半角英数と `/` `-` `_` で issue のタイトルを英訳・要約して命名する
-- e.g. `git fetch && git worktree add .git/implement_startup_screen -b feature/implement_startup_screen`
-- Pull Requestの修正を依頼された場合は、 `gh pr` コマンドでブランチを確認し、該当ブランチのworktreeに移動する
-- **_重要: 以降は worktree ディレクトリ内で作業を行う_**
+## Project Overview
 
-# 2. Draft Pull Request作成
+Yatagarasu is an orchestrator for agentic coding built with TypeScript and the Oclif CLI framework. It integrates Claude AI with Slack through a serve command that listens for app mentions and responds with AI-generated content.
 
-- empty commit して差分をつくって PR を作成できるようにする
-- gh コマンドを使用して PR を作成する
-  - タイトル: 日本語で作業内容を端的に表現する
-  - 本文: 日本語で変更内容を記述する
-    - 最後に `🤖 Generated with [Claude Code](https://claude.ai/code)` を追加
-  - --draft フラグを使用してDraft状態で作成
-- 認証に問題がある場合は gh auth setup-git で設定することを試す
+## Common Development Commands
 
-# 3. 実装
+### Testing
+- `npm test` - Run tests once
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:ui` - Run tests with UI
 
-- t-wada が推奨する TDD のフローに従って、要件を1つずつ実装していく
-- すべての要件を満たすまで実装する
+### Code Quality
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix linting issues
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check formatting
+- `npm run typecheck` - Run TypeScript type checking
+- `npm run check` - Run all checks (tests, lint, format check)
 
-## 4.1 Test の実装
+### Running the Application
+- `yatagarasu serve` - Start the Slack bot server (requires environment variables)
 
-- issue の要件に従ってテストを実装する
-  - issue にテストケースがあればそれに従う
+### DevContainer Management
+- `make container-up` - Start the devcontainer
+- `make container-rebuild` - Rebuild and start the devcontainer
+- `make claude` - Execute Claude CLI in the devcontainer
 
-## 4.2 プロダクションコードの実装
+## High-Level Architecture
 
-- テストが通るように実装する
+### Core Components
 
-## 4.3 リファクタリング
+1. **Command Structure** (Oclif-based)
+   - All commands extend `BaseCommand` (src/commands/base.ts:4)
+   - Base command provides verbose logging flag
+   - Commands are automatically discovered in src/commands/
 
-- 可読性、拡張性が高まるようにリファクタリングを行う
+2. **Serve Command** (src/commands/serve.ts:9)
+   - Main entry point for the Slack bot
+   - Uses `@slack/bolt` for Slack integration
+   - Listens for app mentions and streams Claude responses
+   - Handles multiple response types: thinking, text, system info
 
-# 5. 品質チェック
+3. **Claude API Integration** (src/services/claude-api.ts:126)
+   - Streams responses from Claude using devcontainer exec
+   - Parses JSON stream events (assistant, user, system, result)
+   - Supports all Claude tools (Task, Bash, File operations, Web tools, etc.)
 
-`npm run check` が成功することを確認する
+4. **Logging System**
+   - Centralized Winston logger (src/logger.ts)
+   - Log level can be dynamically set with verbose flag
 
-# 6. Pull Request を Ready for review にする
+### Key Design Patterns
 
-- すべての要件を満たした状態で `git push` したら、 PR を ready for review に変更する
-- sub agents のレビューを gh コマンドで行う
+- **Event Streaming**: Claude responses are streamed as JSON events, allowing real-time updates in Slack
+- **Type Safety**: Comprehensive TypeScript types for all Claude events and tool usage
+- **Modular Commands**: Each command is a separate module extending the base command class
 
-# 7. ユーザーの PR Review
+### Environment Requirements
 
-- PR を見たユーザーから修正の指示があればそれに従う
-
-# チェックリスト
-
-- 新規の作業の場合
-  - [ ] worktree を作成し、worktree ディレクトリ内で作業している
-  - [ ] Draft PR を作成した
-- PRの修正の場合
-  - [ ] gh pr コマンドで指定されたPRのブランチを確認する
-  - [ ] PRのブランチの worktree ディレクトリ内で作業している
-- [ ] 各要件に対してTDDサイクルを実施した
-  - [ ] 要件1: Red（失敗するテストを書いた）
-  - [ ] 要件1: Green（テストが通る最小限の実装をした）
-  - [ ] 要件1: Refactor（リファクタリングした）
-  - [ ] 要件2: Red（失敗するテストを書いた）
-  - [ ] 要件2: Green（テストが通る最小限の実装をした）
-  - [ ] 要件2: Refactor（リファクタリングした）
-  - [ ] （以降、要件の数だけ繰り返す）
-- [ ] 全体のリファクタリングをした
-- [ ] 品質チェック (npm run check) が成功した
-- [ ] PR を Ready for review にした
+For the serve command:
+- `SLACK_BOT_TOKEN` - Slack bot user OAuth token
+- `SLACK_APP_TOKEN` - Slack app-level token (for socket mode)
