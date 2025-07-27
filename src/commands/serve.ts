@@ -1,7 +1,9 @@
 import { Args, Flags } from '@oclif/core';
-import { fetchIssues } from '../feature/github/GitHubClient.js';
+import bolt from '@slack/bolt';
 import logger from '../logger.js';
 import { BaseCommand } from './base.js';
+
+const { App } = bolt;
 
 export default class Serve extends BaseCommand {
   static override args = {
@@ -18,31 +20,38 @@ export default class Serve extends BaseCommand {
   };
 
   public async run(): Promise<void> {
-    const { args, flags } = await this.parse(Serve);
+    // const { args, flags } = await this.parse(Serve);
 
-    logger.info('Fetching GitHub issues...');
-    const issuesResult = await fetchIssues();
+    const app = new App({
+      token: process.env.SLACK_BOT_TOKEN,
+      appToken: process.env.SLACK_APP_TOKEN,
+      socketMode: true,
+    });
 
-    issuesResult.match(
-      (issues) => {
-        logger.info(JSON.stringify(issues.data, null, 2));
-        issues.data.forEach((issue) =>
-          logger.info(JSON.stringify(issue, null, 2)),
-        );
-        logger.info(`Fetched ${issues.data.length} issues`);
-      },
-      (error) => {
-        logger.error(
-          `Failed to fetch issues: ${error.type} - ${error.message}`,
-        );
-        this.error(`GitHub API Error: ${error.message}`);
-      },
-    );
+    app.event('app_mention', async ({ event, say }) => {
+      logger.info(`Received an event: ${JSON.stringify(event)}`);
+      if (!event.text.includes('hello')) {
+        return;
+      }
 
-    const name = flags.name ?? 'world';
-    logger.info(`Hello ${name} from serve command`);
-    if (args.file && flags.force) {
-      logger.info(`Force flag enabled with file: ${args.file}`);
-    }
+      await say({
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `Hello, **<@${event.user}>!**`,
+            },
+          },
+        ],
+        text: `Hello, <@${event.user}>!`,
+        thread_ts: event.ts,
+      });
+    });
+
+    await (async () => {
+      await app.start(3000);
+      logger.info('Serving on port 3000...');
+    })();
   }
 }
