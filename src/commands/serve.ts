@@ -163,7 +163,7 @@ export default class Serve extends BaseCommand {
         logger.info('Call Claude:');
         for await (const line of execa({
           input: '\n',
-        })`claude -p --verbose --output-format stream-json 日本語でよく考えて回答してください。このリポジトリを要約してください。`) {
+        })`devcontainer exec --workspace-folder . claude -p --verbose --output-format stream-json --dangerously-skip-permissions ${event.text}`) {
           const ev: CaludeEvent = JSON.parse(line);
           switch (ev.type) {
             case 'assistant':
