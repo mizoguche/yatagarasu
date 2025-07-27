@@ -2,7 +2,7 @@ import { Args, Flags } from '@oclif/core';
 import bolt from '@slack/bolt';
 import logger from '../logger.js';
 import { BaseCommand } from './base.js';
-import { execa } from 'execa';
+import { callClaude } from '../services/claude-api.js';
 
 const { App } = bolt;
 
@@ -161,10 +161,7 @@ export default class Serve extends BaseCommand {
 
       try {
         logger.info('Call Claude:');
-        for await (const line of execa({
-          input: '\n',
-        })`devcontainer exec --workspace-folder . claude -p --verbose --output-format stream-json --dangerously-skip-permissions ${event.text}`) {
-          const ev: CaludeEvent = JSON.parse(line);
+        for await (const ev of callClaude(event.text)) {
           switch (ev.type) {
             case 'assistant':
               for (const content of ev.message.content) {
