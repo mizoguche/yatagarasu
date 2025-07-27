@@ -151,16 +151,9 @@ export default class Serve extends BaseCommand {
     });
 
     app.event('app_mention', async ({ event, say }) => {
-      logger.info(`Received an event: ${JSON.stringify(event)}`);
-      if (!event.text.includes('hello')) {
-        return;
-      }
-
-      logger.info('Calling Claude...');
       await say(buildMessage('ざわ……ざわ……', event.ts));
 
       try {
-        logger.info('Call Claude:');
         for await (const ev of callClaude(event.text)) {
           switch (ev.type) {
             case 'assistant':

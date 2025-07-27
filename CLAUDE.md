@@ -5,7 +5,7 @@
 - 最新の origin/main から worktree を作成する
 - ブランチ名はすべて半角英数と `/` `-` `_` で issue のタイトルを英訳・要約して命名する
 - e.g. `git fetch && git worktree add .git/implement_startup_screen -b feature/implement_startup_screen`
-- Pull Requestの修正を依頼された場合は、該当ブランチのworktreeに移動する
+- Pull Requestの修正を依頼された場合は、 `gh pr` コマンドでブランチを確認し、該当ブランチのworktreeに移動する
 - **_重要: 以降は worktree ディレクトリ内で作業を行う_**
 
 # 2. Draft Pull Request作成
@@ -54,7 +54,9 @@
 - 新規の作業の場合
   - [ ] worktree を作成し、worktree ディレクトリ内で作業している
   - [ ] Draft PR を作成した
-- [ ] worktree ディレクトリ内で作業している
+- PRの修正の場合
+  - [ ] gh pr コマンドで指定されたPRのブランチを確認する
+  - [ ] PRのブランチの worktree ディレクトリ内で作業している
 - [ ] 各要件に対してTDDサイクルを実施した
   - [ ] 要件1: Red（失敗するテストを書いた）
   - [ ] 要件1: Green（テストが通る最小限の実装をした）

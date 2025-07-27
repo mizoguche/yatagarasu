@@ -1,5 +1,6 @@
 import { execa } from 'execa';
 import type { CaludeEvent } from '../commands/serve.js';
+import logger from '../logger.js';
 
 export async function* callClaude(prompt: string): AsyncGenerator<CaludeEvent> {
   const args = [
@@ -13,8 +14,10 @@ export async function* callClaude(prompt: string): AsyncGenerator<CaludeEvent> {
     '--output-format',
     'stream-json',
     '--dangerously-skip-permissions',
-    prompt,
+    `Ultrathink: ${prompt}`,
   ];
+
+  logger.info('Call Claude:');
 
   const process = execa(args[0], args.slice(1), {
     stdin: 'pipe',
