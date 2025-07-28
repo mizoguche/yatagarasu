@@ -1,0 +1,32 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Test files
+**/*.test.*
+**/*.spec.*
+vitest.config.ts
+
+# Development files
+.devcontainer/
+.claude/
+.envrc
+.gitignore
+eslint.config.js
+tsconfig.json
+Makefile
+
+# Build artifacts
+tmp/
+coverage/
+*.log
+
+# Documentation source
+*.md
+!README.md
+!LICENSE
+
+# Git
+.git/
+.github/

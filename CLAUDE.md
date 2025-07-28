@@ -9,11 +9,13 @@ Yatagarasu is an orchestrator for agentic coding built with TypeScript and the O
 ## Common Development Commands
 
 ### Testing
+
 - `npm test` - Run tests once
 - `npm run test:watch` - Run tests in watch mode
 - `npm run test:ui` - Run tests with UI
 
 ### Code Quality
+
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix linting issues
 - `npm run format` - Format code with Prettier
@@ -22,9 +24,11 @@ Yatagarasu is an orchestrator for agentic coding built with TypeScript and the O
 - `npm run check` - Run all checks (tests, lint, format check)
 
 ### Running the Application
+
 - `yatagarasu serve` - Start the Slack bot server (requires environment variables)
 
 ### DevContainer Management
+
 - `make container-up` - Start the devcontainer
 - `make container-rebuild` - Rebuild and start the devcontainer
 - `make claude` - Execute Claude CLI in the devcontainer
@@ -62,6 +66,7 @@ Yatagarasu is an orchestrator for agentic coding built with TypeScript and the O
 ### Environment Requirements
 
 For the serve command:
+
 - `SLACK_BOT_TOKEN` - Slack bot user OAuth token
 - `SLACK_APP_TOKEN` - Slack app-level token (for socket mode)
 - `YATAGARASU_PROMPTER` - Slack member ID allowed to use the bot (optional, if set only this user can interact with the bot)

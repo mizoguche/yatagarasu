@@ -92,7 +92,7 @@ type SystemEvent = {
   cwd: string;
   session_id: string;
   tools: ToolName[];
-  mcp_servers: any[]; // 中身が不明なためany[]
+  mcp_servers: unknown[]; // MCP servers configuration
   model: string;
   permissionMode: string;
   apiKeySource: string;
