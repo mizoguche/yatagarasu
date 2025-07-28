@@ -64,3 +64,4 @@ Yatagarasu is an orchestrator for agentic coding built with TypeScript and the O
 For the serve command:
 - `SLACK_BOT_TOKEN` - Slack bot user OAuth token
 - `SLACK_APP_TOKEN` - Slack app-level token (for socket mode)
+- `YATAGARASU_PROMPTER` - Slack member ID allowed to use the bot (optional, if set only this user can interact with the bot)

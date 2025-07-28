@@ -29,6 +29,13 @@ export default class Serve extends BaseCommand {
     });
 
     app.event('app_mention', async ({ event, say }) => {
+      const allowedUser = process.env.YATAGARASU_PROMPTER;
+
+      if (allowedUser && event.user !== allowedUser) {
+        await say(buildMessage('お前……誰だ……？', event.ts));
+        return;
+      }
+
       await say(buildMessage('ざわ……ざわ……', event.ts));
 
       try {
