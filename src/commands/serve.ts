@@ -64,8 +64,10 @@ export default class Serve extends BaseCommand {
               // }
               break;
             case 'result':
-              // 最後に assistant の text として送られてくるものと同じなのでスキップ
-              // await say(buildMessage(ev.result, event.ts));
+              // resultは最後に assistant の text として送られてくるものと同じなので完了したことだけ伝える
+              await say(
+                buildMessage(`<@${allowedUser}> :kan_owari:`, event.ts),
+              );
               break;
           }
         }
