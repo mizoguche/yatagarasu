@@ -64,7 +64,11 @@ export default class Serve extends BaseCommand {
             case 'user':
               if (flags.verbose) {
                 for (const content of ev.message.content) {
-                  await say(buildThinking(content.content, event.ts));
+                  if (typeof content.content === 'string') {
+                    await say(buildThinking(content.content, event.ts));
+                  } else if (typeof content.text === 'string') {
+                    await say(buildThinking(content.text, event.ts));
+                  }
                 }
               }
               break;
