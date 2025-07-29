@@ -64,7 +64,7 @@ describe('callClaude', () => {
     }
 
     expect(events).toEqual(mockEvents);
-    expect(mockExeca).toHaveBeenCalledWith({ input: '\n' });
+    expect(mockExeca).toHaveBeenCalledWith({ input: 'test prompt' });
   });
 
   it('should pass the prompt to Claude command', async () => {
@@ -83,7 +83,7 @@ describe('callClaude', () => {
       events.push(event);
     }
 
-    expect(mockExeca).toHaveBeenCalledWith({ input: '\n' });
+    expect(mockExeca).toHaveBeenCalledWith({ input: 'Hello Claude' });
     expect(events).toHaveLength(1);
   });
 

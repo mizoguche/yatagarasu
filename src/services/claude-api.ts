@@ -125,11 +125,11 @@ export type CaludeEvent =
   | ResultEvent;
 
 export async function* callClaude(prompt: string): AsyncGenerator<CaludeEvent> {
-  logger.info(`Call Claude with prompt: ${prompt}`);
+  logger.info(`Call Claude with prompt length: ${prompt.length} chars`);
 
   const result = execa({
-    input: '\n',
-  })`devcontainer exec --workspace-folder . claude -p --verbose --output-format stream-json --dangerously-skip-permissions "${prompt}"`;
+    input: prompt,
+  })`devcontainer exec --workspace-folder . claude --verbose --output-format stream-json --dangerously-skip-permissions`;
 
   for await (const line of result) {
     console.log(line);
