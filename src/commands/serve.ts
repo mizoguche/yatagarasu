@@ -3,6 +3,8 @@ import bolt from '@slack/bolt';
 import logger from '../logger.js';
 import { BaseCommand } from './base.js';
 import { callClaude } from '../services/claude-api.js';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 const { App } = bolt;
 
@@ -43,8 +45,40 @@ export default class Serve extends BaseCommand {
       await say(buildMessage('ざわ……ざわ……', event.ts));
 
       try {
-        const prompt = event.text.replace(/<@.*?>\s*/, '');
-        for await (const ev of callClaude(prompt)) {
+        const textWithoutMention = event.text.replace(/<@.*?>\s*/, '');
+
+        let finalPrompt = textWithoutMention;
+
+        if (textWithoutMention.startsWith('/')) {
+          const [commandPart, ...argsParts] = textWithoutMention.split(/\s+/);
+          const commandName = commandPart.substring(1);
+          const args = argsParts.join(' ');
+
+          const commandFilePath = path.join(
+            process.cwd(),
+            '.claude',
+            'commands',
+            `${commandName}.md`,
+          );
+
+          try {
+            const commandContent = await fs.readFile(commandFilePath, 'utf-8');
+            finalPrompt = commandContent.replace(/\$ARGUMENTS/g, args);
+            logger.info(
+              `Executing slash command: /${commandName} with args: ${args}`,
+            );
+          } catch {
+            await say(
+              buildMessage(
+                `コマンド \`/${commandName}\` が見つからない……！`,
+                event.ts,
+              ),
+            );
+            return;
+          }
+        }
+
+        for await (const ev of callClaude(finalPrompt)) {
           switch (ev.type) {
             case 'assistant':
               for (const content of ev.message.content) {
