@@ -21,7 +21,11 @@ export default class Serve extends BaseCommand {
   };
 
   public async run(): Promise<void> {
-    // const { args, flags } = await this.parse(Serve);
+    const { flags } = await this.parse(Serve);
+    if (flags.verbose) {
+      logger.info('--verbose is set');
+    }
+
     const app = new App({
       token: process.env.SLACK_BOT_TOKEN,
       appToken: process.env.SLACK_APP_TOKEN,
@@ -58,10 +62,11 @@ export default class Serve extends BaseCommand {
               await say(buildThinking(`モデル: ${ev.model}`, event.ts));
               break;
             case 'user':
-              // コスパ悪いのでスキップ
-              // for (const content of ev.message.content) {
-              //   await say(buildThinking(content.content, event.ts));
-              // }
+              if (flags.verbose) {
+                for (const content of ev.message.content) {
+                  await say(buildThinking(content.content, event.ts));
+                }
+              }
               break;
             case 'result':
               // resultは最後に assistant の text として送られてくるものと同じなので完了したことだけ伝える
